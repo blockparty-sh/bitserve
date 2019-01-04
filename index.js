@@ -72,7 +72,10 @@ app.get(/^\/explorer\/(.+)/, function(req, res) {
   res.render('explorer', { code: decoded })
 });
 app.get('/explorer', function (req, res) {
-  res.render('explorer', { code: JSON.stringify(config.query, null, 2) })
+  res.render('explorer', { code: JSON.stringify({
+    "v": 3,
+    "q": { "find": {}, "limit": 10 }
+  }, null, 2) })
 });
 app.get('/', function(req, res) {
   res.redirect('/explorer')
