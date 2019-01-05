@@ -49,7 +49,7 @@ app.get(/^\/q\/(.+)/, cors(), limiter, async function(req, res) {
     queue.add(async function() {
       // regular read
       let result = await db.read(r)
-      if (config.log) {
+      if (process.env.bitserve_log) {
         console.log("query = ", r)
         console.log("response = ", result)
       }
@@ -59,7 +59,7 @@ app.get(/^\/q\/(.+)/, cors(), limiter, async function(req, res) {
   } else {
     // regular read
     let result = await db.read(r)
-    if (config.log) {
+    if (process.env.bitserve_log) {
       console.log("query = ", r)
       console.log("response = ", result)
     }
@@ -82,18 +82,18 @@ app.get('/', function(req, res) {
 });
 var run = async function() {
   db = await bitqueryd.init({
-    url: (config.url ? config.url : process.env.url),
-    timeout: config.timeout,
-    name: config.name
+    url: (process.env.db_url ? process.env.db_url : process.env.db_url),
+    timeout: process.env.bitserve_timeout ? process.env.bitserve_timeout : 30000,
+    name: process.env.db_name ? process.env.db_name : "bitdb"
   })
-  app.listen(config.port, () => {
+  app.listen(process.env.bitserve_port, () => {
     console.log("######################################################################################");
     console.log("#")
     console.log("#  BITSERVE: BitDB Microservice")
     console.log("#  Serving Bitcoin through HTTP...")
     console.log("#")
-    console.log(`#  Explorer: ${ip.address()}:${config.port}/explorer`);
-    console.log(`#  API Endpoint: ${ip.address()}:${config.port}/q`);
+    console.log(`#  Explorer: ${ip.address()}:${process.env.bitserve_port}/explorer`);
+    console.log(`#  API Endpoint: ${ip.address()}:${process.env.bitserve_port}/q`);
     console.log("#")
     console.log("#  Learn more at https://docs.bitdb.network")
     console.log("#")
